@@ -1,4 +1,4 @@
-const Product = require("../models/product");
+const AquaProduct = require("../models/product");
 const BigPromise = require("../middlewares/bigPromise");
 const CustomError = require("../utils/customError");
 const cloudinary = require("cloudinary");
@@ -41,7 +41,7 @@ exports.addProduct = BigPromise(async (req, res, next) => {
   req.body.photos = imageArray;
   req.body.user = req.user.id;
 
-  const product = await Product.create(req.body);
+  const product = await AquaProduct.create(req.body);
 
   res.status(200).json({
     success: true,
@@ -51,9 +51,9 @@ exports.addProduct = BigPromise(async (req, res, next) => {
 
 exports.getAllProduct = BigPromise(async (req, res, next) => {
   const resultPerPage = 3;
-  const totalcountProduct = await Product.countDocuments();
+  const totalcountProduct = await AquaProduct.countDocuments();
 
-  const productsObj = new WhereClause(Product.find(), req.query)
+  const productsObj = new WhereClause(AquaProduct.find(), req.query)
     .search()
     .filter();
 
@@ -96,7 +96,7 @@ exports.addReview = BigPromise(async (req, res, next) => {
     comment,
   };
 
-  const product = await Product.findById(productId);
+  const product = await AquaProduct.findById(productId);
 
   const AlreadyReview = product.reviews.find(
     (rev) => rev.user.toString() === req.user._id.toString()
@@ -132,7 +132,7 @@ exports.addReview = BigPromise(async (req, res, next) => {
 exports.deleteReview = BigPromise(async (req, res, next) => {
   const { productId } = req.query;
 
-  const product = await Product.findById(productId);
+  const product = await AquaProduct.findById(productId);
 
   const reviews = product.reviews.filter(
     (rev) => rev.user.toString() === req.user._id.toString()
@@ -148,7 +148,7 @@ exports.deleteReview = BigPromise(async (req, res, next) => {
 
   //update the product
 
-  await Product.findByIdAndUpdate(
+  await AquaProduct.findByIdAndUpdate(
     productId,
     {
       reviews,
@@ -168,7 +168,7 @@ exports.deleteReview = BigPromise(async (req, res, next) => {
 });
 
 exports.getOnlyReviewsForOneProduct = BigPromise(async (req, res, next) => {
-  const product = await Product.findById(req.query.id);
+  const product = await AquaProduct.findById(req.query.id);
 
   res.status(200).json({
     success: true,
@@ -178,7 +178,7 @@ exports.getOnlyReviewsForOneProduct = BigPromise(async (req, res, next) => {
 
 // admin only controllers
 exports.adminGetAllProduct = BigPromise(async (req, res, next) => {
-  const products = await Product.find();
+  const products = await AquaProduct.find();
 
   res.status(200).json({
     success: true,
@@ -187,7 +187,7 @@ exports.adminGetAllProduct = BigPromise(async (req, res, next) => {
 });
 
 exports.adminUpdateOneProduct = BigPromise(async (req, res, next) => {
-  let product = await Product.findById(req.params.id);
+  let product = await AquaProduct.findById(req.params.id);
 
   if (!product) {
     return next(new CustomError("No product found with this id", 401));
@@ -219,7 +219,7 @@ exports.adminUpdateOneProduct = BigPromise(async (req, res, next) => {
 
   req.body.photos = imagesArray;
 
-  product = await Product.findByIdAndUpdate(req.params.id, req.body, {
+  product = await AquaProduct.findByIdAndUpdate(req.params.id, req.body, {
     new: true,
     runValidators: true,
     useFindAndModify: false,
@@ -232,7 +232,7 @@ exports.adminUpdateOneProduct = BigPromise(async (req, res, next) => {
 });
 
 exports.adminDeleteOneProduct = BigPromise(async (req, res, next) => {
-  const product = await Product.findById(req.params.id);
+  const product = await AquaProduct.findById(req.params.id);
 
   if (!product) {
     return next(new CustomError("No product found with this id", 401));

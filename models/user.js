@@ -4,12 +4,18 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
 
-const userSchema = new mongoose.Schema({
-  name: {
-    type: String,
-    required: [true, "Please provide a name"],
-    maxlength: [40, "Name should be under 40 characters"],
-  },
+// Define the Address schema
+const addressSchema = new mongoose.Schema({
+  street: String,
+  city: String,
+  state: String,
+  postalCode: String,
+});
+
+// Define the User schema
+const aquaUserSchema = new mongoose.Schema({
+  id: { type: String },
+  username: String, // You can add other user-related fields as needed
   email: {
     type: String,
     required: [true, "Please provide an email"],
@@ -22,6 +28,10 @@ const userSchema = new mongoose.Schema({
     minlength: [6, "password should be atleast 6 char"],
     select: false,
   },
+  alternativeEmail: {
+    type: String,
+    validate: [validator.isEmail, "Please enter email in correct format"],
+  },
   role: {
     type: String,
     default: "user",
@@ -29,23 +39,47 @@ const userSchema = new mongoose.Schema({
   photo: {
     id: {
       type: String,
-      required: true,
     },
     secure_url: {
       type: String,
-      required: true,
     },
   },
+  phoneNo: Number,
+  // You can store the photo URL or file path
+  gstDetails: {
+    gstEmail: { type: String },
+    gstNo: { type: String },
+    gstPhone: { type: Number },
+    gstAddres: { type: String },
+  },
+  cart: [
+    {
+      // Define the structure of items in the cart
+      productId: mongoose.Schema.Types.ObjectId, // Reference to the product
+      quantity: Number,
+    },
+  ],
+  orders: [
+    {
+      // Define the structure of user orders
+      orderId: mongoose.Schema.Types.ObjectId, // Reference to the order
+      orderDate: Date,
+    },
+  ],
+  wishes: [
+    {
+      // Define the structure of user wishes
+      productId: mongoose.Schema.Types.ObjectId, // Reference to the product
+      addedDate: Date,
+    },
+  ],
   forgotPasswordToken: String,
   forgotPasswordExpiry: Date,
-  createdAt: {
-    type: Date,
-    default: Date.now,
-  },
+  addresses: [addressSchema], // Store multiple addresses as an array of address objects
 });
 
 //encrypt password before save - HOOKS
-userSchema.pre("save", async function (next) {
+aquaUserSchema.pre("save", async function (next) {
   if (!this.isModified("password")) {
     return next();
   }
@@ -53,19 +87,19 @@ userSchema.pre("save", async function (next) {
 });
 
 // validate the password with passed on user password
-userSchema.methods.isValidatedPassword = async function (usersendPassword) {
+aquaUserSchema.methods.isValidatedPassword = async function (usersendPassword) {
   return await bcrypt.compare(usersendPassword, this.password);
 };
 
 //create and return jwt token
-userSchema.methods.getJwtToken = function () {
+aquaUserSchema.methods.getJwtToken = function () {
   return jwt.sign({ id: this._id }, process.env.JWT_SECRET, {
     expiresIn: process.env.JWT_EXPIRY,
   });
 };
 
 //generate forgot password token (string)
-userSchema.methods.getForgotPasswordToken = function () {
+aquaUserSchema.methods.getForgotPasswordToken = function () {
   // generate a long and randomg string
   const forgotToken = crypto.randomBytes(20).toString("hex");
 
@@ -81,4 +115,4 @@ userSchema.methods.getForgotPasswordToken = function () {
   return forgotToken;
 };
 
-module.exports = mongoose.model("User", userSchema);
+module.exports =  mongoose.model("AquaEcomUser", aquaUserSchema);

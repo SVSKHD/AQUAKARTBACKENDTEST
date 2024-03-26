@@ -1,11 +1,21 @@
-const mongoose = require("mongoose");
+const mongoose = require("mongoose")
 
-const productSchema = new mongoose.Schema({
-  name: {
+const AquaProductSchema = new mongoose.Schema({
+  title: {
     type: String,
     required: [true, "please provide product name"],
     trim: true,
     maxlength: [120, "Product name should not be more than 120 characters"],
+  },
+  discountPriceStatus: {
+    type: Boolean,
+    default: false,
+  },
+  discountPrice: {
+    type: Number,
+  },
+  keywords: {
+    type: String,
   },
   price: {
     type: Number,
@@ -15,6 +25,10 @@ const productSchema = new mongoose.Schema({
   description: {
     type: String,
     required: [true, "please provide product description"],
+  },
+  notes: {
+    type: String,
+    maxlength: [300, "Product Notes must not exceed 300"],
   },
   photos: [
     {
@@ -29,16 +43,16 @@ const productSchema = new mongoose.Schema({
     },
   ],
   category: {
-    type: String,
-    required: [
-      true,
-      "please select category from- short-sleeves, long-sleeves, sweat-shirts, hoodies",
-    ],
-    enum: {
-      values: ["shortsleeves", "longsleeves", "sweatshirt", "hoodies"],
-      message:
-        "please select category ONLY from - short-sleeves, long-sleeves, sweat-shirts and hoodies ",
-    },
+    type: mongoose.Schema.ObjectId,
+    ref: "AquaCategory",
+  },
+  subCategory: {
+    type: mongoose.Schema.ObjectId,
+    ref: "AquaSubCategory",
+  },
+  blog: {
+    type: mongoose.Schema.ObjectId,
+    ref: "AquaBlog",
   },
   //this field was updated in order videos later
   stock: {
@@ -57,36 +71,32 @@ const productSchema = new mongoose.Schema({
     type: Number,
     default: 0,
   },
-  reviews: [
-    {
-      user: {
-        type: mongoose.Schema.ObjectId,
-        ref: "User",
-        required: true,
-      },
-      name: {
-        type: String,
-        required: true,
-      },
-      rating: {
-        type: Number,
-        required: true,
-      },
-      comment: {
-        type: String,
-        required: true,
-      },
-    },
-  ],
-  user: {
-    type: mongoose.Schema.ObjectId,
-    ref: "User",
-    required: true,
-  },
+  // reviews: [
+  //     {
+  //         user: {
+  //             type: mongoose.Schema.ObjectId,
+  //             ref: "User",
+  //         },
+  //         name: {
+  //             type: String,
+  //         },
+  //         rating: {
+  //             type: Number,
+  //         },
+  //         comment: {
+  //             type: String,
+  //         },
+  //     },
+  // ],
+  // user: {
+  //     type: mongoose.Schema.ObjectId,
+  //     ref: "User",
+  // },
   createdAt: {
     type: Date,
-    default: Date.now,
+    default: Date.now(),
   },
 });
 
-module.exports = mongoose.model("Product", productSchema);
+module.exports = mongoose.model("AquaProduct", AquaProductSchema);
+

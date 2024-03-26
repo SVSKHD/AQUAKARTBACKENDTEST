@@ -1,4 +1,4 @@
-const User = require("../models/user");
+const AquaEcomUser = require("../models/user");
 const BigPromise = require("../middlewares/bigPromise");
 const CustomError = require("../utils/customError");
 const cookieToken = require("../utils/cookieToken");
@@ -9,32 +9,27 @@ const crypto = require("crypto");
 exports.signup = BigPromise(async (req, res, next) => {
   //let result;
   console.log(req.body);
-  if (!req.files) {
-    return next(new CustomError("photo is required for signup", 400));
+  // if (!req.files) {
+  //   return next(new CustomError("photo is required for signup", 400));
+  // }
+
+  const { email, password } = req.body;
+
+  if (!email || !password) {
+    return next(new CustomError("email and password are required", 400));
   }
 
-  const { name, email, password } = req.body;
+  // let file = req.files.photo;
 
-  if (!email || !name || !password) {
-    return next(new CustomError("Name, email and password are required", 400));
-  }
+  // const result = await cloudinary.v2.uploader.upload(file.tempFilePath, {
+  //   folder: "users",
+  //   width: 150,
+  //   crop: "scale",
+  // });
 
-  let file = req.files.photo;
-
-  const result = await cloudinary.v2.uploader.upload(file.tempFilePath, {
-    folder: "users",
-    width: 150,
-    crop: "scale",
-  });
-
-  const user = await User.create({
-    name,
+  const user = await AquaEcomUser.create({
     email,
-    password,
-    photo: {
-      id: result.public_id,
-      secure_url: result.secure_url,
-    },
+    password
   });
 
   cookieToken(user, res);
@@ -49,7 +44,7 @@ exports.login = BigPromise(async (req, res, next) => {
   }
 
   // get user from DB
-  const user = await User.findOne({ email }).select("+password");
+  const user = await AquaEcomUser.findOne({ email }).select("+password");
 
   // if user not found in DB
   if (!user) {
@@ -90,7 +85,7 @@ exports.forgotPassword = BigPromise(async (req, res, next) => {
   const { email } = req.body;
   console.log(email);
   // find user in database
-  const user = await User.findOne({ email });
+  const user = await AquaEcomUser.findOne({ email });
 
   // if user not found in database
   if (!user) {
@@ -118,7 +113,7 @@ exports.forgotPassword = BigPromise(async (req, res, next) => {
   try {
     await mailHelper({
       email: user.email,
-      subject: "LCO TStore - Password reset email",
+      subject: "AquaCart - Password reset email",
       message,
     });
 
@@ -146,7 +141,7 @@ exports.passwordReset = BigPromise(async (req, res, next) => {
   const encryToken = crypto.createHash("sha256").update(token).digest("hex");
 
   // find user based on hased on token and time in future
-  const user = await User.findOne({
+  const user = await AquaEcomUser.findOne({
     encryToken,
     forgotPasswordExpiry: { $gt: Date.now() },
   });
@@ -180,7 +175,7 @@ exports.passwordReset = BigPromise(async (req, res, next) => {
 exports.getLoggedInUserDetails = BigPromise(async (req, res, next) => {
   //req.user will be added by middleware
   // find user by id
-  const user = await User.findById(req.user.id);
+  const user = await AquaEcomUser.findById(req.user.id);
 
   //send response and user data
   res.status(200).json({
@@ -194,7 +189,7 @@ exports.changePassword = BigPromise(async (req, res, next) => {
   const userId = req.user.id;
 
   // get user from database
-  const user = await User.findById(userId).select("+password");
+  const user = await AquaEcomUser.findById(userId).select("+password");
 
   //check if old password is correct
   const isCorrectOldPassword = await user.isValidatedPassword(
@@ -224,7 +219,7 @@ exports.updateUserDetails = BigPromise(async (req, res, next) => {
 
   // if photo comes to us
   if (req.files) {
-    const user = await User.findById(req.user.id);
+    const user = await AquaEcomUser.findById(req.user.id);
 
     const imageId = user.photo.id;
 
@@ -249,7 +244,7 @@ exports.updateUserDetails = BigPromise(async (req, res, next) => {
   }
 
   // update the data in user
-  const user = await User.findByIdAndUpdate(req.user.id, newData, {
+  const user = await AquaEcomUser.findByIdAndUpdate(req.user.id, newData, {
     new: true,
     runValidators: true,
     useFindAndModify: false,
@@ -262,7 +257,7 @@ exports.updateUserDetails = BigPromise(async (req, res, next) => {
 
 exports.adminAllUser = BigPromise(async (req, res, next) => {
   // select all users
-  const users = await User.find();
+  const users = await AquaEcomUser.find();
 
   // send all users
   res.status(200).json({
@@ -273,7 +268,7 @@ exports.adminAllUser = BigPromise(async (req, res, next) => {
 
 exports.admingetOneUser = BigPromise(async (req, res, next) => {
   // get id from url and get user from database
-  const user = await User.findById(req.params.id);
+  const user = await AquaEcomUser.findById(req.params.id);
 
   if (!user) {
     next(new CustomError("No user found", 400));
@@ -297,7 +292,7 @@ exports.adminUpdateOneUserDetails = BigPromise(async (req, res, next) => {
   };
 
   // update the user in database
-  const user = await User.findByIdAndUpdate(req.params.id, newData, {
+  const user = await AquaEcomUser.findByIdAndUpdate(req.params.id, newData, {
     new: true,
     runValidators: true,
     useFindAndModify: false,
@@ -310,7 +305,7 @@ exports.adminUpdateOneUserDetails = BigPromise(async (req, res, next) => {
 
 exports.adminDeleteOneUser = BigPromise(async (req, res, next) => {
   // get user from url
-  const user = await User.findById(req.params.id);
+  const user = await AquaEcomUser.findById(req.params.id);
 
   if (!user) {
     return next(new CustomError("No Such user found", 401));
@@ -332,7 +327,7 @@ exports.adminDeleteOneUser = BigPromise(async (req, res, next) => {
 
 exports.managerAllUser = BigPromise(async (req, res, next) => {
   // select the user with role of user
-  const users = await User.find({ role: "user" });
+  const users = await AquaEcomUser.find({ role: "user" });
 
   res.status(200).json({
     success: true,
