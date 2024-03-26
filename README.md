@@ -1,1 +1,1 @@
-# Aquakart store for pro backend developer course
+# Aquakart store 
