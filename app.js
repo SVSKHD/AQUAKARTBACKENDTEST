@@ -24,7 +24,7 @@ app.use(
   fileUpload({
     useTempFiles: true,
     tempFileDir: "/tmp/",
-  })
+  }),
 );
 
 //temp check

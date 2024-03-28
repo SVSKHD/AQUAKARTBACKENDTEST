@@ -1,4 +1,4 @@
-const mongoose = require("mongoose")
+const mongoose = require("mongoose");
 
 const AquaProductSchema = new mongoose.Schema({
   title: {
@@ -99,4 +99,3 @@ const AquaProductSchema = new mongoose.Schema({
 });
 
 module.exports = mongoose.model("AquaProduct", AquaProductSchema);
-

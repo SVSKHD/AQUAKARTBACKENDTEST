@@ -29,7 +29,7 @@ exports.signup = BigPromise(async (req, res, next) => {
 
   const user = await AquaEcomUser.create({
     email,
-    password
+    password,
   });
 
   cookieToken(user, res);
@@ -49,7 +49,7 @@ exports.login = BigPromise(async (req, res, next) => {
   // if user not found in DB
   if (!user) {
     return next(
-      new CustomError("Email or password does not match or exist", 400)
+      new CustomError("Email or password does not match or exist", 400),
     );
   }
 
@@ -59,7 +59,7 @@ exports.login = BigPromise(async (req, res, next) => {
   //if password do not match
   if (!isPasswordCorrect) {
     return next(
-      new CustomError("Email or password does not match or exist", 400)
+      new CustomError("Email or password does not match or exist", 400),
     );
   }
 
@@ -153,7 +153,7 @@ exports.passwordReset = BigPromise(async (req, res, next) => {
   // check if password and conf password matched
   if (req.body.password !== req.body.confirmPassword) {
     return next(
-      new CustomError("password and confirm password do not match", 400)
+      new CustomError("password and confirm password do not match", 400),
     );
   }
 
@@ -193,7 +193,7 @@ exports.changePassword = BigPromise(async (req, res, next) => {
 
   //check if old password is correct
   const isCorrectOldPassword = await user.isValidatedPassword(
-    req.body.oldPassword
+    req.body.oldPassword,
   );
 
   if (!isCorrectOldPassword) {
@@ -233,7 +233,7 @@ exports.updateUserDetails = BigPromise(async (req, res, next) => {
         folder: "users",
         width: 150,
         crop: "scale",
-      }
+      },
     );
 
     // add photo data in newData object

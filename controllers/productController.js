@@ -21,7 +21,7 @@ exports.addProduct = BigPromise(async (req, res, next) => {
         req.files.photos[index].tempFilePath,
         {
           folder: "products",
-        }
+        },
       );
 
       // another way to upload and check error
@@ -99,7 +99,7 @@ exports.addReview = BigPromise(async (req, res, next) => {
   const product = await AquaProduct.findById(productId);
 
   const AlreadyReview = product.reviews.find(
-    (rev) => rev.user.toString() === req.user._id.toString()
+    (rev) => rev.user.toString() === req.user._id.toString(),
   );
 
   if (AlreadyReview) {
@@ -135,7 +135,7 @@ exports.deleteReview = BigPromise(async (req, res, next) => {
   const product = await AquaProduct.findById(productId);
 
   const reviews = product.reviews.filter(
-    (rev) => rev.user.toString() === req.user._id.toString()
+    (rev) => rev.user.toString() === req.user._id.toString(),
   );
 
   const numberOfReviews = reviews.length;
@@ -159,7 +159,7 @@ exports.deleteReview = BigPromise(async (req, res, next) => {
       new: true,
       runValidators: true,
       useFindAndModify: false,
-    }
+    },
   );
 
   res.status(200).json({
@@ -198,7 +198,7 @@ exports.adminUpdateOneProduct = BigPromise(async (req, res, next) => {
     //destroy the existing image
     for (let index = 0; index < product.photos.length; index++) {
       const res = await cloudinary.v2.uploader.destroy(
-        product.photos[index].id
+        product.photos[index].id,
       );
     }
 
@@ -207,7 +207,7 @@ exports.adminUpdateOneProduct = BigPromise(async (req, res, next) => {
         req.files.photos[index].tempFilePath,
         {
           folder: "products", //folder name -> .env
-        }
+        },
       );
 
       imagesArray.push({

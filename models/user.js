@@ -115,4 +115,4 @@ aquaUserSchema.methods.getForgotPasswordToken = function () {
   return forgotToken;
 };
 
-module.exports =  mongoose.model("AquaEcomUser", aquaUserSchema);
+module.exports = mongoose.model("AquaEcomUser", aquaUserSchema);

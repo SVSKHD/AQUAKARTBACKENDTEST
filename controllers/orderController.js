@@ -33,7 +33,7 @@ exports.createOrder = BigPromise(async (req, res, next) => {
 exports.getOneOrder = BigPromise(async (req, res, next) => {
   const order = await Order.findById(req.params.id).populate(
     "user",
-    "name email"
+    "name email",
   );
 
   if (!order) {

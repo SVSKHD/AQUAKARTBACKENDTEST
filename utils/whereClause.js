@@ -36,7 +36,7 @@ class WhereClause {
 
     stringOfCopyQ = stringOfCopyQ.replace(
       /\b(gte|lte|gt|lt)\b/g,
-      (m) => `$${m}`
+      (m) => `$${m}`,
     );
 
     const jsonOfCopyQ = JSON.parse(stringOfCopyQ);
