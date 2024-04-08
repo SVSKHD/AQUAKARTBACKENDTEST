@@ -41,13 +41,13 @@ const payment = require("./routes/payment");
 const order = require("./routes/order");
 
 //router middleware
-app.use("/api/v1", home);
+app.use("v1/api", home);
 app.use("/api/v1", user);
 app.use("/api/v1", product);
 app.use("/api/v1", payment);
 app.use("/api/v1", order);
 
-app.get("/signuptest", (req, res) => {
+app.get("/v1/signuptest", (req, res) => {
   res.render("signuptest");
 });
 
