@@ -19,4 +19,8 @@ exports.getAllCategories = BigPromise(async (req, res, next) => {
       categories
     });
   });
+
+exports.getProductByCategory = BigPromise(async(req,res,next)=>{
+    
+})
   
