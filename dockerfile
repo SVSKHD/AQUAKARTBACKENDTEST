@@ -14,4 +14,4 @@ RUN npm install && npm install pm2 -g
 EXPOSE 8000
 
 # Command to run when starting the container using PM2
-CMD ["pm2-runtime", "start", "ecosystem.config.js"]
+CMD ["pm2-runtime", "start", "npm", "--", "start"]
