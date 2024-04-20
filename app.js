@@ -47,7 +47,7 @@ app.use("/api/v1", product);
 app.use("/api/v1", payment);
 app.use("/api/v1", order);
 
-app.get("/v1/signuptest", (req, res) => {
+app.get("/api/signuptest", (req, res) => {
   res.render("signuptest");
 });
 
