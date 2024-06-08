@@ -33,6 +33,11 @@ app.set("view engine", "ejs");
 //morgan middleware
 app.use(morgan("tiny"));
 
+// Welcome message route
+app.get("/", (req, res) => {
+  res.json({ message: "Welcome to the AquaKart Backend API" });
+});
+
 //import all routes here
 const home = require("./routes/home");
 const user = require("./routes/user");
@@ -41,7 +46,7 @@ const payment = require("./routes/payment");
 const order = require("./routes/order");
 
 //router middleware
-app.use("v1/api", home);
+app.use("/v1/api", home);
 app.use("/api/v1", user);
 app.use("/api/v1", product);
 app.use("/api/v1", payment);
@@ -51,7 +56,7 @@ app.get("/api/signuptest", (req, res) => {
   res.render("signuptest");
 });
 
-app.get("/", (req, res) => {
+app.get("/home", (req, res) => {
   res.render("home");
 });
 
