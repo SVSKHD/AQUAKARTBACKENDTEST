@@ -7,9 +7,7 @@ const {
   getAllEcomUsers,
 } = require("../../controllers/crm/adminController");
 const {
-  isLoggedIn,
-  customAdminRole,
-  customRole,
+  isAdminLoggedIn,
 } = require("../../middlewares/user");
 
 router.get("/admin/status", (req, res) => {
@@ -21,6 +19,7 @@ router.get("/logout", logout);
 
 router.get(
   "/get-all-ecom-users",
+  isAdminLoggedIn,
   getAllEcomUsers,
 );
 
