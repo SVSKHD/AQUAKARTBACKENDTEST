@@ -14,7 +14,7 @@ RUN npm install
 RUN npm install -g npm@latest
 
 # Install PM2 globally
-RUN npm install pm2 -g
+RUN npm install -g pm2
 
 # Copy the rest of the application code
 COPY . .
@@ -22,5 +22,5 @@ COPY . .
 # Expose the port the app runs on
 EXPOSE 8000
 
-# Command to run the application
-CMD ["pm2", "start"]
+# Command to run the application using PM2
+CMD ["pm2-runtime", "start", "index.js"]
