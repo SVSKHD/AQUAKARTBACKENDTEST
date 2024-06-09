@@ -23,4 +23,4 @@ COPY . .
 EXPOSE 8000
 
 # Command to run the application
-CMD ["pm2-runtime", "start", "index.js"]
+CMD ["pm2", "start"]
