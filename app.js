@@ -52,6 +52,10 @@ app.use("/api/v1", product);
 app.use("/api/v1", payment);
 app.use("/api/v1", order);
 
+const adminUser = require("./routes/crm/admin");
+// crm routes
+app.use("/api/crm", adminUser);
+
 app.get("/api/signuptest", (req, res) => {
   res.render("signuptest");
 });
